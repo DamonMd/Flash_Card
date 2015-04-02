@@ -73,7 +73,16 @@ loop do
 
   if user_choice == 1
     deck = get_deck
-    deck.cards.each do |card|
+    # deck.cards.each do |card|
+      cards = deck.cards.map {|card| card }
+      while cards.count > 0
+        card = cards.pop
+
+      #map deck to an array
+      #while array.count > 0
+      #play card. maybe array.pop = card. then push back in if wrong
+      #if right add score/attempt, delete card from array
+      #else replay card
       puts card.card_front
       puts "What is your answer?"
       answer = gets.chomp
@@ -90,6 +99,7 @@ loop do
         else
           puts ""
           puts "Sorry, the answer was #{card.card_back}"
+          cards.unshift(card)
           line_break
         end
     end
@@ -121,7 +131,7 @@ loop do
 
   if user_choice == 5
     puts "Which card would you like to delete?"
-    show_all_cards()
+    show_all_cards
     card_selection = gets.chomp.to_i
     card_to_delete = Card.find_by(id: card_selection)
     card_to_delete.destroy
