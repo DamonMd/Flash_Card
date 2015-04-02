@@ -8,19 +8,19 @@ require_relative 'lib/deck'
 
 def get_deck_info
   new_deck = {}
-  puts "What do you want the new Category to be?"
-  new_deck[:category] = gets.chomp
+  puts "What do you want the new name to be?"
+  new_deck[:name] = gets.chomp
   return new_deck
 end
 
 def get_card_info(deck)
   card_info = {}
   puts "What should the front of the card say?"
-  card_info[:card_front] = gets.chomp
+  card_info[:front] = gets.chomp
   puts "What should the back of the card say?"
-  card_info[:card_back] = gets.chomp
-  card_info[:guess_right] = false
-  card_info[:card_played] = false
+  card_info[:back] = gets.chomp
+  card_info[:score] = 0
+  card_info[:attempts] = 0
   card_info[:deck_id] = deck.id
   return card_info
 end
@@ -64,15 +64,16 @@ return gets.chomp.to_i
 end
 
 current_score = 0
+current_attempts = 0
 
 loop do
 
-  user_choice = menu()
+  user_choice = menu
 
   #make when/case statement instead?
 
   if user_choice == 1
-    deck = get_deck
+     deck = get_deck
     # deck.cards.each do |card|
       cards = deck.cards.map {|card| card }
       while cards.count > 0
@@ -83,22 +84,25 @@ loop do
       #play card. maybe array.pop = card. then push back in if wrong
       #if right add score/attempt, delete card from array
       #else replay card
-      puts card.card_front
+      puts card.front
       puts "What is your answer?"
       answer = gets.chomp
-        if answer.downcase == card.card_back
+        if answer.downcase == card.back.downcase
           puts ""
           puts "Good Job!"
-          puts "The answer was indeed #{card.card_back}"
+          puts "The answer was indeed #{card.back}"
           # card.mark_correct
-          card.guess_right = true
-          card.save
+          card.score +=1
           current_score +=1
+          current_attempts +=1
+          card.attempts +=1
+          card.save
           #card.attempts = card.attempts + 1????
           line_break
         else
           puts ""
-          puts "Sorry, the answer was #{card.card_back}"
+          puts "Sorry, the answer was #{card.back}"
+          card.attempts +=1
           cards.unshift(card)
           line_break
         end
@@ -123,9 +127,9 @@ loop do
     selection = gets.chomp.to_i
     card = Card.find_by(id: selection)
     puts "What should the front of the card read?"
-    card.card_front = gets.chomp
+    card.front = gets.chomp
     puts "What should the back of the card read?"
-    card.card_back = gets.chomp
+    card.back = gets.chomp
     card.save
   end
 
@@ -138,16 +142,18 @@ loop do
   end
 
   if user_choice == 6
-    score = Card.where(guess_right: true).count
+    # total_score = Card.where(guess_right: true).count
+    total_score = Card.sum(:score)
     potential_score = Card.count
-    puts "Overall you have #{score} points!"
-    puts "Out of a possible #{potential_score} points"
+    attempts = Card.sum(:attempts)
+    puts "Overall you have #{total_score} points!"
+    puts ''
     puts "Current round score:#{current_score}"
+    puts "Total of attempts this round:#{current_attempts}"
     puts "******************************************"
   end
 
   if user_choice == 7
-    #maybe add in score = current_score
     break
   end
 
