@@ -1,0 +1,37 @@
+The overall structure of the project associations seemed straight forward enough.
+
+A Deck has many cards, a card belongs to a Deck.
+Where it could get complicated, is if you wish to add a User module so you can
+have more than one User play the game. A User could have many decks, and a
+deck could belong to a User, or potentially many decks belonging to many Users.
+
+I wanted to explore that functionality further, but unfortunately I didn't have
+the time to do so(and potentially the mental capacity).
+
+The schema and seed set up wasn't vastly different than what we've encountered before,
+but the hardest part was figuring out what columns to have and what data type
+belonged with them. Towards the end of my project, I found myself tweaking these
+often as I searched to add more functionality to my project. But this often led
+to headaches as well, as I would have to update my seed file accordingly and all
+of my naming conventions in my app file/class files.
+
+ I have found some parts of this project to be a little tricky. Mainly when attempting
+ to add a more robust app. It took a while to have cards the User got wrong to be
+ added back into the deck for them to try again. Also keeping track of the current score
+ and overall score was a hurdle.
+
+ I had much difficulty trying to have my methods live in the classes instead of
+ my app file. When I tried to move them, my methods either lost some functionality
+ or didn't work at all. I realize the Flash Cards project might not lend itself
+ to be able to do this as much as some other projects, but I would liked to
+ have succeeded in having at least one method in a class besides "to_s".
+
+ Now that I am nearing completion with this project, I realize I don't like my menu set up.
+ It fulfills the requirements of the project, but doesn't have an intuitive flow. I am going
+ to try to modify it some more but so far each time I tweak it, I break it.
+
+Now that it "works", I find myself wanting to add more or change more of my program since
+I'm looking at it from more of a User point of view. Initially I wanted to meet initial requirements
+and just get the thing to run. But more and more I'm wanting more options from the program as a
+User. For me I think I need to put myself in the User's position from the get go or at least
+re-visit it more often while I'm coding(probably what the user_stories should accomplish).

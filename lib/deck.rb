@@ -1,16 +1,15 @@
-require 'pry'
+# require 'pry'
 require 'pg'
 require 'active_record'
 require_relative '../db/connection'
 
 class Deck < ActiveRecord::Base
   has_many :cards, dependent: :destroy
-  validates :category, uniqueness: true
-
-
+  validates :name, uniqueness: true
+  validates :name, length: {minimum: 1, maximum: 100}
 
   def to_s
-    return"Deck Number: #{id}, #{category}"
+    return"Deck: #{id}, #{name}"
   end
 
 end

@@ -4,7 +4,7 @@ require 'pry'
 require_relative 'db/connection'
 require_relative 'lib/card'
 require_relative 'lib/deck'
-#SINATRA
+
 
 def get_deck_info
   new_deck = {}
@@ -29,7 +29,6 @@ def line_break
   puts "***********************************************"
 end
 
-
 def get_deck
   puts 'Which Deck #?'
   show_all_decks
@@ -45,9 +44,26 @@ def show_all_cards
   puts Card.all
 end
 
+def clear
+  sleep 1
+  system"clear"
+end
+
+def increment_attributes(card)
+  card.score +=1
+  card.attempts +=1
+  card.save
+end
+
+def card_choice
+  show_all_cards
+  selection = gets.chomp.to_i
+  return Card.find_by(id: selection)
+end
 
 def menu
   line_break
+  puts "Your current Flash Decks:"
   show_all_decks
   line_break
   puts "Welcome to Flash Cards! Please Choose an Option"
@@ -58,7 +74,6 @@ def menu
   puts "5. Delete a flash card"
   puts "6. View Score"
   puts "7. Quit"
-#add view answers with score???
 #Maybe have edit a deck, with a sub menu?or play game with a diff menu?
 return gets.chomp.to_i
 end
@@ -67,90 +82,79 @@ current_score = 0
 current_attempts = 0
 
 loop do
-
   user_choice = menu
 
-  #make when/case statement instead?
-
   if user_choice == 1
-     deck = get_deck
-    # deck.cards.each do |card|
+      clear
+      deck = get_deck
+      puts "Enter 'q' at anytime to quit"
       cards = deck.cards.map {|card| card }
       while cards.count > 0
         card = cards.pop
-
-      #map deck to an array
-      #while array.count > 0
-      #play card. maybe array.pop = card. then push back in if wrong
-      #if right add score/attempt, delete card from array
-      #else replay card
-      puts card.front
-      puts "What is your answer?"
-      answer = gets.chomp
-        if answer.downcase == card.back.downcase
-          puts ""
-          puts "Good Job!"
-          puts "The answer was indeed #{card.back}"
-          # card.mark_correct
-          card.score +=1
-          current_score +=1
-          current_attempts +=1
-          card.attempts +=1
-          card.save
-          #card.attempts = card.attempts + 1????
-          line_break
-        else
-          puts ""
-          puts "Sorry, the answer was #{card.back}"
-          card.attempts +=1
-          cards.unshift(card)
-          line_break
-        end
-    end
+        puts card.front
+        puts "What is your answer?"
+        answer = gets.chomp
+          if answer == 'q'
+            break
+          elsif answer.downcase == card.back.downcase
+            puts ""
+            puts "Good Job!"
+            puts "The answer was indeed #{card.back}"
+            increment_attributes(card)
+            current_score +=1
+            current_attempts +=1
+            line_break
+            clear
+          else
+            puts ""
+            puts "Sorry, the answer was #{card.back}"
+            card.attempts +=1
+            current_attempts +=1
+            cards.unshift(card)
+            line_break
+            clear
+          end
+      end
   end
 
-
   if user_choice == 2
+    clear
     deck = get_deck
     new_card = Card.create(get_card_info(deck))
-    line_break
   end
 
   if user_choice == 3
+    clear
     Deck.create(get_deck_info)
-    line_break
   end
 
   if user_choice == 4
+    clear
     puts "Which card would you like to edit?"
-    show_all_cards
-    selection = gets.chomp.to_i
-    card = Card.find_by(id: selection)
+    card = card_choice
     puts "What should the front of the card read?"
     card.front = gets.chomp
     puts "What should the back of the card read?"
     card.back = gets.chomp
     card.save
+    clear
   end
 
   if user_choice == 5
     puts "Which card would you like to delete?"
-    show_all_cards
-    card_selection = gets.chomp.to_i
-    card_to_delete = Card.find_by(id: card_selection)
-    card_to_delete.destroy
+    card = card_choice
+    card.destroy
   end
 
   if user_choice == 6
-    # total_score = Card.where(guess_right: true).count
+    clear
     total_score = Card.sum(:score)
-    potential_score = Card.count
     attempts = Card.sum(:attempts)
     puts "Overall you have #{total_score} points!"
     puts ''
     puts "Current round score:#{current_score}"
     puts "Total of attempts this round:#{current_attempts}"
-    puts "******************************************"
+    puts line_break
   end
 
   if user_choice == 7
