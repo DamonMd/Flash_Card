@@ -1,0 +1,11 @@
+The user will begin by choosing from an initial menu.
+
+The user will have the option to view all cards to edit, delete a card,
+add a card, create a new deck, or play.
+
+During the play through, the user will be presented with a card(front) and will need to guess the card(back)
+The user will then be presented with the back, where upon they will be informed if they
+got the question right or wrong. If wrong, the card will be added back to the deck where they will
+get to try again.
+
+Score will be kept track both for the current play through and for the overall score.
